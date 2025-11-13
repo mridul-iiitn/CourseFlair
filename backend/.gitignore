@@ -1,0 +1,22 @@
+# Python
+__pycache__/
+*.pyc
+instance/
+*.pyo
+*.pyd
+
+# Virtual Environment
+venv/
+env/
+
+# Environment files
+.env
+.env.*
+
+# Database
+*.db
+*.sqlite3
+migrations/
+
+# Others
+.DS_Store
