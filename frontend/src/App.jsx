@@ -1,26 +1,51 @@
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { Routes, Route } from "react-router-dom";
 import Navbar from "./Components/Navbar";
 import Home from "./Pages/Home";
 import Courses from "./Pages/Courses";
 import CourseDetail from "./Pages/CourseDetail";
 import Login from "./Pages/Login";
-import './index.css'
 import Dashboard from "./Pages/Dashboard";
+import ProtectedRoute from "./Components/ProtectedRoute";
+import './index.css';
 
 function App() {
   return (
     <>
-    <Navbar />
+      <Navbar />
+
       <Routes>
         <Route path="/" element={<Home />} />
-        <Route path="/courses" element={<Courses />} />
-        <Route path="/course/:id" element={<CourseDetail />} />
+
+        <Route
+          path="/courses"
+          element={
+            <ProtectedRoute>
+              <Courses />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/course/:id"
+          element={
+            <ProtectedRoute>
+              <CourseDetail />
+            </ProtectedRoute>
+          }
+        />
+
         <Route path="/login" element={<Login />} />
-        <Route path="/dashboard" element={<Dashboard />} />
+
+        <Route
+          path="/dashboard"
+          element={
+            <ProtectedRoute>
+              <Dashboard />
+            </ProtectedRoute>
+          }
+        />
       </Routes>
-    
     </>
-      
   );
 }
 

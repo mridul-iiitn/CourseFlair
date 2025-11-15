@@ -1,13 +1,14 @@
-import React, { useEffect, useState, useContext } from "react";
+import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import courses from "../Data/CoursesData";
-import { UserContext } from "../Context/UserContext";
+import { useUser } from "../Context/UserContext";
 
 export default function CourseDetail() {
   const { id } = useParams();
   const navigate = useNavigate();
-  const { isLoggedIn, userName } = useContext(UserContext);
+  const { user, token } = useUser();
+
   const [course, setCourse] = useState(null);
   const [showModal, setShowModal] = useState(false);
 
@@ -25,12 +26,13 @@ export default function CourseDetail() {
   }
 
   const handleEnroll = () => {
-    if (!isLoggedIn) {
+    if (!token) {
       navigate("/login");
       return;
     }
 
     const stored = JSON.parse(localStorage.getItem("enrolledCourses")) || [];
+
     if (!stored.find((c) => c.id === course.id)) {
       stored.push(course);
       localStorage.setItem("enrolledCourses", JSON.stringify(stored));
@@ -63,8 +65,7 @@ export default function CourseDetail() {
       {/* Details */}
       <div className="max-w-4xl mx-auto p-8">
         <p className="text-gray-700 dark:text-gray-300 mb-6 text-lg leading-relaxed">
-          Welcome to <span className="font-semibold">{course.title}</span>! Learn
-          with structured lessons, practical projects, and expert guidance.
+          Welcome to <span className="font-semibold">{course.title}</span>!
         </p>
 
         <div className="flex flex-col sm:flex-row justify-between items-center bg-white dark:bg-gray-800 shadow-md p-6 rounded-2xl mb-8">
@@ -76,21 +77,6 @@ export default function CourseDetail() {
             Enroll Now
           </button>
         </div>
-
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, delay: 0.3 }}
-          className="bg-gradient-to-r from-blue-600 to-purple-600 text-white p-8 rounded-2xl shadow-lg"
-        >
-          <h2 className="text-2xl font-semibold mb-3">What You’ll Learn</h2>
-          <ul className="list-disc list-inside space-y-2 text-lg opacity-90">
-            <li>Core fundamentals of {course.title}</li>
-            <li>Hands-on mini-projects and real-world examples</li>
-            <li>Deep conceptual understanding</li>
-            <li>Tips for building production-ready apps faster</li>
-          </ul>
-        </motion.div>
       </div>
 
       {/* Modal */}
@@ -113,8 +99,7 @@ export default function CourseDetail() {
                 Enrollment Successful 🎉
               </h2>
               <p className="text-gray-700 dark:text-gray-300 mb-4">
-                Congrats <span className="font-semibold">{userName}</span>! You’ve successfully enrolled in{" "}
-                <span className="font-semibold">{course.title}</span>.
+                Congrats <span className="font-semibold">{user?.name}</span>!
               </p>
               <button
                 onClick={() => navigate("/courses")}

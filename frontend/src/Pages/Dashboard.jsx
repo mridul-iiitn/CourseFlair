@@ -1,28 +1,29 @@
-import React, { useEffect, useState, useContext } from "react";
-import { UserContext } from "../Context/UserContext";
+import React, { useEffect, useState } from "react";
+import { useUser } from "../Context/UserContext";
 import { useNavigate, Link } from "react-router-dom";
 import { motion } from "framer-motion";
 
 export default function Dashboard() {
-  const { isLoggedIn, userName } = useContext(UserContext);
+  const { user, token } = useUser();
   const [enrolledCourses, setEnrolledCourses] = useState([]);
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (!isLoggedIn) {
+    if (!token) {
       navigate("/login");
       return;
     }
+
     const stored = JSON.parse(localStorage.getItem("enrolledCourses")) || [];
     setEnrolledCourses(stored);
-  }, [isLoggedIn, navigate]);
+  }, [token, navigate]);
 
-  if (!isLoggedIn) return null;
+  if (!token) return null;
 
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900 py-10 px-6 md:px-20 text-gray-800 dark:text-gray-100 transition-all duration-500">
       <h1 className="text-4xl font-bold mb-8 text-center">
-        Welcome, <span className="text-blue-600">{userName}</span> 👋
+        Welcome, <span className="text-blue-600">{user?.name}</span> 👋
       </h1>
 
       {enrolledCourses.length === 0 ? (
