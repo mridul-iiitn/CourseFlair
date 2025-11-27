@@ -26,11 +26,14 @@ function Login() {
     const idToken = response.credential;
 
     try {
-      const backendRes = await fetch("http://127.0.0.1:5000/api/auth/google", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ id_token: idToken }),
-      });
+      const backendRes = await fetch(
+        `${import.meta.env.VITE_BACKEND_URL}/api/auth/google`,
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ id_token: idToken }),
+        }
+      );
 
       const data = await backendRes.json();
 
@@ -39,7 +42,7 @@ function Login() {
         setToken(data.access_token);
         setUser(data.user);
 
-        navigate("/dashboard"); 
+        navigate("/dashboard");
       } else {
         alert("Login failed! Check backend logs.");
       }
